@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Attendance Portal - Login</title>
+  <style>
+    body { font-family: system-ui, sans-serif; max-width: 22rem; margin: 4rem auto; }
+    label, input, button { display: block; width: 100%; box-sizing: border-box; }
+    input { margin: .25rem 0 1rem; padding: .5rem; }
+    button { padding: .6rem; cursor: pointer; }
+    #error { color: #b00020; margin-top: 1rem; }
+    #welcome { color: #1b5e20; }
+  </style>
+</head>
+<body>
+  <main id="login-view">
+    <h1>Attendance Portal</h1>
+    <form id="login-form" novalidate>
+      <label for="username">Username</label>
+      <input type="text" id="username" name="username" autocomplete="username">
+
+      <label for="password">Password</label>
+      <input type="password" id="password" name="password" autocomplete="current-password">
+
+      <button type="submit" id="login-button">Log in</button>
+    </form>
+    <p id="error" role="alert" hidden></p>
+  </main>
+
+  <section id="dashboard" hidden>
+    <h1 id="welcome"></h1>
+    <button type="button" id="logout-button">Log out</button>
+  </section>
+
+  <script>
+    // Demo credentials. The check is deferred to mimic a server round-trip,
+    // so the page changes asynchronously and tests need an explicit wait.
+    const VALID_USER = "student";
+    const VALID_PASSWORD = "Secret@123";
+
+    const form = document.getElementById("login-form");
+    const error = document.getElementById("error");
+
+    form.addEventListener("submit", (event) => {
+      event.preventDefault();
+      error.hidden = true;
+
+      const user = document.getElementById("username").value.trim();
+      const password = document.getElementById("password").value;
+
+      setTimeout(() => {
+        if (!user || !password) {
+          error.textContent = "Username and password are required.";
+          error.hidden = false;
+        } else if (user === VALID_USER && password === VALID_PASSWORD) {
+          document.getElementById("login-view").hidden = true;
+          document.getElementById("welcome").textContent = "Welcome, " + user + "!";
+          document.getElementById("dashboard").hidden = false;
+          document.title = "Attendance Portal - Dashboard";
+        } else {
+          error.textContent = "Invalid username or password.";
+          error.hidden = false;
+        }
+      }, 600);
+    });
+
+    document.getElementById("logout-button").addEventListener("click", () => {
+      document.getElementById("dashboard").hidden = true;
+      document.getElementById("login-view").hidden = false;
+      form.reset();
+      document.title = "Attendance Portal - Login";
+    });
+  </script>
+</body>
+</html>
