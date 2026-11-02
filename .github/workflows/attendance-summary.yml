@@ -1,0 +1,44 @@
+name: Attendance Summary
+
+# Run on every push to any branch.
+on:
+  push:
+
+jobs:
+  attendance-summary:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+
+      - name: Run unit tests
+        run: python -m pytest test_attendance.py -v
+
+      - name: Run attendance summary script
+        run: python main.py
+
+      # Runs even when an earlier step failed, so the job always reports a
+      # clear final verdict and fails if anything before it did not succeed.
+      - name: Verify workflow status
+        if: always()
+        env:
+          JOB_STATUS: ${{ job.status }}
+        run: |
+          echo "Job status: $JOB_STATUS"
+          if [ "$JOB_STATUS" != "success" ]; then
+            echo "::error::Attendance summary workflow did not succeed ($JOB_STATUS)"
+            exit 1
+          fi
+          echo "All steps succeeded."
