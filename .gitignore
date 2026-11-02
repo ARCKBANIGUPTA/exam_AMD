@@ -1,0 +1,7 @@
+__pycache__/
+*.pyc
+.pytest_cache/
+.venv/
+.DS_Store
+# stale stubs in a misspelled (singular) directory; GitHub only reads .github/workflows/
+.github/workflow/
